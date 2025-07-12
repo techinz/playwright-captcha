@@ -1,0 +1,3 @@
+(token) => {
+    window.cfCallback(token);
+}

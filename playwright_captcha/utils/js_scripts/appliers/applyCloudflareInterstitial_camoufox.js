@@ -1,0 +1,1 @@
+mw:window.cfCallback("{token}")

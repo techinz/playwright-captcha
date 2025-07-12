@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Just an innocent addon",
+  "version": "1.0",
+  "permissions": [
+    "scripting"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "scripts/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "inject.js"
+      ],
+      "run_at": "document_start"
+    }
+  ]
+}

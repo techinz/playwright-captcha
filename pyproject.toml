@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=65.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "playwright-captcha"
+version = "0.1.0"
+description = "Automating captcha solving for Playwright. Supports Cloudflare Turnstile & Interstitial, and reCAPTCHA V2 & V3 with Click-based or API (2captcha) solving. Designed for easy integration with Playwright, Patchright, and Camoufox."
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+authors = [
+    { name = "techinz", email = "contact@techinz.dev" }
+]
+dependencies = [
+    "2captcha-python-async"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6.1.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/techinz/playwright-captcha"
+Repository = "https://github.com/techinz/playwright-captcha"
+Issues = "https://github.com/techinz/playwright-captcha/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["playwright_captcha*"]
+
+[tool.setuptools.package-data]
+playwright_captcha = [
+    "utils/js_scripts/**/*.js",
+    "utils/camoufox_add_init_script/**/*",
+]
