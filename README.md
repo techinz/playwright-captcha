@@ -2,7 +2,6 @@
 
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyPI version](https://img.shields.io/pypi/v/playwright-captcha.svg)](https://pypi.org/project/playwright-captcha/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 A Python library that makes captcha solving simple and automated with Playwright and Playwright-based frameworks. Just a few lines of code, and you're ready to go!
 
@@ -21,10 +20,43 @@ This framework helps you solve captchas in Playwright or Playwright-based framew
 <div align="center">
   <h2>Click Solver</h2>
   <h4>Cloudflare Interstitial</h4>
+
+  https://github.com/user-attachments/assets/06c244ff-ba82-4d8a-9ef8-17ece400716c
     
+  <details> 
+  <summary><h4>Cloudflare Turnstile</h4></summary>
+
+  https://github.com/user-attachments/assets/52b49abd-5aa4-4262-9cb6-a555a95330c9
+
+  </details>
+
   <h2>TwoCaptcha Solver</h2>
+
+  <details> 
+  <summary><h4>Cloudflare Interstitial</h4></summary>
+    
+  https://github.com/user-attachments/assets/25a6233b-43fb-4164-b41c-ea80100b501d
+
+  </details>
+
+  <details> 
+  <summary><h4>Cloudflare Turnstile</h4></summary>
+    
+  https://github.com/user-attachments/assets/0f3f7999-1e0d-437e-9727-36a99a6c5abd
+
+  </details>
+
   <details> 
   <summary><h4>ReCaptcha V2</h4></summary>
+  
+  https://github.com/user-attachments/assets/37b5d9b0-7c32-49b3-9c22-ffe0258161d1
+
+  </details>
+
+  <details> 
+  <summary><h4>ReCaptcha V3</h4></summary>
+  
+  https://github.com/user-attachments/assets/7fc7d508-be87-4c60-aaf8-ab445601e69c
 
   </details>
 </div>
