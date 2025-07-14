@@ -6,5 +6,9 @@ class SolverType(Enum):
 
     base = "base"
 
+    # click
     click = "click"
+
+    # api
     twocaptcha = "twocaptcha"
+    tencaptcha = "tencaptcha"

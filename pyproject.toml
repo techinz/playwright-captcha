@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "playwright-captcha"
-version = "0.1.0"
+version = "0.1.1"
 description = "Automating captcha solving for Playwright. Supports Cloudflare Turnstile & Interstitial, and reCAPTCHA V2 & V3 with Click-based or API (2captcha) solving. Designed for easy integration with Playwright, Patchright, and Camoufox."
 readme = "README.md"
 requires-python = ">=3.8"
