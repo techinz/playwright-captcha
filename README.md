@@ -30,7 +30,7 @@ This framework helps you solve captchas in Playwright or Playwright-based framew
 
   </details>
 
-  <h2>TwoCaptcha Solver</h2>
+  <h2>API Solver (Twocaptcha used here but others work similarly)</h2>
 
   <details> 
   <summary><h4>Cloudflare Interstitial</h4></summary>
@@ -78,12 +78,36 @@ Uses the browser's stealthiness to automatically click and solve captchas (works
 - ✅ Cloudflare Interstitial
 - ✅ Cloudflare Turnstile
 
-### TwoCaptcha Solver  
-Uses the 2Captcha.com API for solving:
+### API Solver
+
+<details>
+  <summary><h4>TwoCaptcha - https://2captcha.com</h4></summary>
+
+ Uses the 2Captcha.com API for solving:
 - ✅ Cloudflare Interstitial
 - ✅ Cloudflare Turnstile
 - ✅ reCAPTCHA v2
 - ✅ reCAPTCHA v3
+
+  </details>
+
+<details>
+  <summary><h4>TenCaptcha - https://10captcha.com</h4></summary>
+
+ Uses the 10Captcha.com API for solving:
+- ✅ reCAPTCHA v2
+- ✅ reCAPTCHA v3
+
+  </details>
+
+<details>
+  <summary><h4>CaptchaAI - https://captchaai.com</h4></summary>
+
+ Uses the captchaai.com API for solving:
+- ✅ reCAPTCHA v2
+- ✅ reCAPTCHA v3
+
+  </details>
 
 *More captcha types and solvers coming soon! Contributions welcome.*
 
@@ -132,7 +156,7 @@ async def solve_captcha():
 asyncio.run(solve_captcha())
 ```
 
-### TwoCaptcha Solver Example
+### API Solver Example (TwoCaptcha)
 
 ```python
 import asyncio
@@ -152,6 +176,11 @@ async def solve_with_2captcha():
         framework = FrameworkType.PLAYWRIGHT
         
         # Create solver before navigating to the page
+        # Available API Solvers:
+        # TwoCaptchaSolver
+        # TenCaptchaSolver
+        # CaptchaAISolver
+        
         async with TwoCaptchaSolver(framework=framework, 
                                     page=page, 
                                     async_two_captcha_client=captcha_client) as solver:
@@ -176,7 +205,7 @@ asyncio.run(solve_with_2captcha())
 2. **Click** on it using browser automation
 3. **Wait** for successful completion
 
-### External Solver Process (e.g., TwoCaptcha):
+### External Solver Process (e.g., TwoCaptcha, TenCaptcha, CaptchaAI):
 1. **Find** the captcha element
 2. **Extract** required data (site key, URL, etc.)
 3. **Send** to external solving service
@@ -264,6 +293,8 @@ playwright-captcha/
 
 ```env
 TWO_CAPTCHA_API_KEY=your_2captcha_api_key_here
+TEN_CAPTCHA_API_KEY=your_10captcha_api_key_here
+CAPTCHA_AI_API_KEY=your_captchaai_api_key_here
 ```
 
 ### Solver Options
@@ -277,7 +308,7 @@ solver = ClickSolver(
     attempt_delay=3      # Delay between attempts (seconds)
 )
 
-# TwoCaptcha solver with custom settings  
+# API solver with custom settings (TwoCaptcha)
 solver = TwoCaptchaSolver(
     framework=framework, # Framework type (PLAYWRIGHT, PATCHRIGHT, CAMOUFOX)
     page=page,

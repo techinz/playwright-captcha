@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class SolverType(Enum):
-    """ Supported solver types """
+    """Supported solver types"""
 
     base = "base"
 
@@ -12,3 +12,4 @@ class SolverType(Enum):
     # api
     twocaptcha = "twocaptcha"
     tencaptcha = "tencaptcha"
+    captchaai = "captchaai"
