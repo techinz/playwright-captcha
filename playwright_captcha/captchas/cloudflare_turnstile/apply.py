@@ -8,14 +8,14 @@ from playwright_captcha.utils.js_script import load_js_script
 logger = logging.getLogger(__name__)
 
 
-async def apply_cloudflare_turnstile_captcha(page: Page, token: str):
+async def apply_cloudflare_turnstile_captcha(page: Page, token: str) -> None:
     """
     Apply a token to bypass Cloudflare interstitial captcha
 
     :param page: Playwright Page containing the captcha
     :param token: The token returned by solving the captcha
 
-    :return bool: True if token was successfully applied
+    :raises CaptchaApplyingError: If the token could not be applied
     """
 
     # try to find and fill the input field(s)

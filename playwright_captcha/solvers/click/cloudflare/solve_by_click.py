@@ -37,6 +37,7 @@ async def solve_cloudflare_by_click(
     :param wait_checkbox_attempts: Maximum number of attempts to find the checkbox and wait for it to be ready
     :param wait_checkbox_delay: Delay between wait_checkbox_attempts in seconds to find the checkbox and wait for it to be ready
     :param checkbox_click_attempts: Maximum number of attempts to click the checkbox
+
     :return: None if solved, Exception otherwise
 
     :raises CaptchaDetectionError: If Cloudflare iframes are not found

@@ -17,6 +17,7 @@ async def detect_expected_content(
     :param page: Playwright Page
     :param captcha_container: Page, Frame, ElementHandle
     :param expected_content_selector: CSS selector for the expected content
+
     :return: True if expected content is found, False otherwise
     """
 

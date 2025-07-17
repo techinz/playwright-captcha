@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class TenCaptchaSolver(ApiSolverBase):
-    """ 10Captcha external solving service """
+    """10Captcha external solving service"""
 
     type: SolverType = SolverType.tencaptcha
 
@@ -50,7 +50,7 @@ class TenCaptchaSolver(ApiSolverBase):
         :return: The solved captcha token as a string
         """
 
-        solver_data = await super()._solve_captcha_once(captcha_container, captcha_type, **kwargs)
+        solver_data = await self._get_solver_data(captcha_type)
         solver = solver_data.get('solver')
 
         # get url and set it in kwargs if not provided

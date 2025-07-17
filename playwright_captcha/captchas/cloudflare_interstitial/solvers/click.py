@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 async def solve_cloudflare_interstitial_click(framework: FrameworkType,
                                               page: Page,
                                               captcha_container: Union[Page, Frame, ElementHandle],
-                                              **kwargs):
+                                              **kwargs) -> None:
     """
     Solve Cloudflare Interstitial captcha using click-based method
 

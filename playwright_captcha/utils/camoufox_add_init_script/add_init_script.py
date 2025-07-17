@@ -6,8 +6,12 @@ from pathlib import Path
 import aiofiles
 
 
-def get_addon_path():
-    """Get the absolute path to the addon's directory"""
+def get_addon_path() -> str:
+    """
+    Get the absolute path to the addon's directory
+
+    :return: Absolute path to the addon's directory
+    """
 
     current_dir = Path(__file__).parent
 

@@ -7,7 +7,7 @@ from playwright_captcha.utils.validators import validate_required_params
 logger = logging.getLogger(__name__)
 
 
-async def solve_recaptcha_v3_twocaptcha(async_two_captcha_client: AsyncTwoCaptcha, **kwargs):
+async def solve_recaptcha_v3_twocaptcha(async_two_captcha_client: AsyncTwoCaptcha, **kwargs) -> dict:
     """
     Solve Recaptcha V3 captcha using 2Captcha service.
 

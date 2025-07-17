@@ -17,6 +17,7 @@ async def get_shadow_roots(
 
     :param framework: Framework type (e.g. PLAYWRIGHT, PATCHRIGHT, CAMOUFOX)
     :param queryable: Page, Frame, ElementHandle
+
     :return: List of shadow roots ElementHandles
     """
 
@@ -78,6 +79,7 @@ async def search_shadow_root_elements(
     :param framework: Framework type (e.g. PATCHRIGHT, CAMOUFOX, PLAYWRIGHT)
     :param queryable: Page, Frame, ElementHandle
     :param selector: CSS selector to search for elements
+
     :return: List of ElementHandles that match the selector
     """
 
@@ -117,6 +119,7 @@ async def search_shadow_root_iframes(
     :param framework: Framework type (e.g. PATCHRIGHT, CAMOUFOX, PLAYWRIGHT)
     :param captcha_container: Page, Frame, ElementHandle
     :param src_filter: String to filter the iframe's src attribute
+
     :return: list of matched iframes or empty list if no iframes found
     """
 

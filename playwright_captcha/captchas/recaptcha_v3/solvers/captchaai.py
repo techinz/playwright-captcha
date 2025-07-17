@@ -6,7 +6,7 @@ from playwright_captcha.utils.validators import validate_required_params
 logger = logging.getLogger(__name__)
 
 
-async def solve_recaptcha_v3_captcha_ai(async_captcha_ai_client: AsyncCaptchaAI, **kwargs):
+async def solve_recaptcha_v3_captcha_ai(async_captcha_ai_client: AsyncCaptchaAI, **kwargs) -> dict:
     """
     Solve Recaptcha V3 captcha using CaptchaAI service.
 

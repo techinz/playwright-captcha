@@ -5,7 +5,15 @@ from playwright.async_api import Page, ElementHandle, Frame
 
 async def search_element_by_css_selector(queryable: Union[Page, Frame, ElementHandle], selector: str,
                                          attributes: List[str]) -> List[str]:
-    """ Helper to search for an element by CSS selector and return its data-sitekey attribute """
+    """
+    Helper to search for an element by CSS selector and return its data-sitekey attribute
+
+    :param queryable: Playwright Page, Frame, or ElementHandle to search in
+    :param selector: CSS selector to find the element
+    :param attributes: List of attributes to retrieve from the found element
+
+    :return: List of attribute values from the found element, or None for each attribute if not found
+    """
 
     results = []
 

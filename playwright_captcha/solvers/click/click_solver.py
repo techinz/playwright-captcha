@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class ClickSolver(BaseSolver):
-    """ Click solver for captchas that can be solved by automated clicking """
+    """Click solver for captchas that can be solved by automated clicking"""
 
     type: SolverType = SolverType.click
 
@@ -32,7 +32,7 @@ class ClickSolver(BaseSolver):
             captcha_container: Union[Page, Frame, ElementHandle],
             captcha_type: CaptchaType,
             **kwargs
-    ):
+    ) -> None:
         """
         Solve captcha by clicking
 
@@ -41,7 +41,7 @@ class ClickSolver(BaseSolver):
         :param kwargs: Additional parameters for the captcha solving request (e.g. sitekey, useragent, pagedata)
         """
 
-        solver_data = await super()._solve_captcha_once(captcha_container, captcha_type, **kwargs)
+        solver_data = await self._get_solver_data(captcha_type)
         solver = solver_data.get('solver')
 
         # split kwargs to separate ones needed to apply the captcha from ones needed to solve it

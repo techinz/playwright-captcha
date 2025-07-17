@@ -87,10 +87,8 @@ class BaseSolver(ABC):
 
         cls._appliers[captcha_type] = applier_func
 
-    async def prepare(self):
-        """
-        Prepare the solver, e.g. apply patches or requests interceptors for self.detect_data()
-        """
+    async def prepare(self) -> None:
+        """Prepare the solver, e.g. apply patches or requests interceptors for self.detect_data()"""
 
         if self._prepare_called:
             logger.warning(f"{self.get_name()} is already prepared, skipping prepare()")
@@ -107,7 +105,7 @@ class BaseSolver(ABC):
             # cloudflare interstitial requires to inject a script to intercept the challenge parameters
             await self.page.add_init_script(await load_js_script('patches/interceptCloudflareInterstitialData.js'))
 
-    async def _prepare_framework(self):
+    async def _prepare_framework(self) -> None:
         """Framework preparation"""
 
         if self.framework == FrameworkType.CAMOUFOX:
@@ -117,7 +115,7 @@ class BaseSolver(ABC):
         else:
             await self._prepare_playwright()
 
-    async def _prepare_camoufox(self):
+    async def _prepare_camoufox(self) -> None:
         """Camoufox preparation"""
 
         logger.info("Applying Camoufox optimizations...")
@@ -143,7 +141,7 @@ class BaseSolver(ABC):
         else:
             logger.info("Camoufox workaround already applied")
 
-    async def _prepare_patchright(self):
+    async def _prepare_patchright(self) -> None:
         """Patchright preparation"""
 
         # patch patchright's page.evaluate() to execute out of the isolated context by default
@@ -158,11 +156,11 @@ class BaseSolver(ABC):
 
         self.page.evaluate = evaluate_wrapper
 
-    async def _prepare_playwright(self):
+    async def _prepare_playwright(self) -> None:
         """Playwright preparation"""
         pass
 
-    async def cleanup(self):
+    async def cleanup(self) -> None:
         """Cleanup resources and restore original methods"""
 
         if self._cleanup_called:
@@ -180,14 +178,20 @@ class BaseSolver(ABC):
 
         logger.info(f"{self.get_name()} cleanup completed")
 
-    async def _cleanup_framework(self):
+    async def _cleanup_framework(self) -> None:
         """Framework cleanup"""
         pass
 
     async def detect_captcha_data(self, captcha_container: Union[Page, Frame, ElementHandle], captcha_type: CaptchaType,
-                                  **kwargs):
+                                  **kwargs) -> Dict:
         """
         Detect captcha data needed for solving or submitting such as site key, callback, etc.
+
+        :param captcha_container: Page, Frame or ElementHandle containing the captcha
+        :param captcha_type: Type of captcha to detect data for
+        :param kwargs: Additional parameters passed to the detector function (e.g. useragent, pagedata)
+
+        :return: Dictionary containing the detected captcha data (e.g. site key, callback)
         """
 
         detector = self._detectors.get(captcha_type)
@@ -212,6 +216,8 @@ class BaseSolver(ABC):
         :param captcha_type: Type of captcha to get the solver data for
 
         :return: Dictionary containing the solver data
+
+        :raises ValueError: If no solver is registered for the given type and captcha type
         """
 
         solver_data = self._solvers.get(self.type, {}).get(captcha_type)
@@ -226,7 +232,7 @@ class BaseSolver(ABC):
             captcha_container: Union[Page, Frame, ElementHandle],
             captcha_type: CaptchaType,
             **kwargs
-    ):
+    ) -> Union[bool, str]:
         """
         Universal captcha solving function
 
@@ -255,9 +261,9 @@ class BaseSolver(ABC):
             )
         """
 
-        return await self._get_solver_data(captcha_type)
+        raise NotImplementedError('This method must be implemented in subclasses')
 
-    async def solve_captcha(self, captcha_container, captcha_type, **kwargs):
+    async def solve_captcha(self, captcha_container, captcha_type, **kwargs) -> Union[bool, str]:
         """
         Universal captcha solving function
 
@@ -314,7 +320,7 @@ class BaseSolver(ABC):
 
         raise last_exception
 
-    async def apply_captcha(self, captcha_type: CaptchaType, token: str, **kwargs):
+    async def apply_captcha(self, captcha_type: CaptchaType, token: str, **kwargs) -> None:
         """
         Apply the solved captcha token to the page
 
@@ -336,6 +342,7 @@ class BaseSolver(ABC):
         Check if this solver can solve this captcha type
 
         :param captcha_type: The type of captcha to check
+
         :return: True if the captcha type is supported, False otherwise
         """
 

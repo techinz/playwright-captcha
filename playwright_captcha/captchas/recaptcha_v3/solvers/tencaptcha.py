@@ -6,7 +6,7 @@ from playwright_captcha.utils.validators import validate_required_params
 logger = logging.getLogger(__name__)
 
 
-async def solve_recaptcha_v3_tencaptcha(async_ten_captcha_client: AsyncTenCaptcha, **kwargs):
+async def solve_recaptcha_v3_tencaptcha(async_ten_captcha_client: AsyncTenCaptcha, **kwargs) -> dict:
     """
     Solve Recaptcha V3 captcha using 10Captcha service.
 

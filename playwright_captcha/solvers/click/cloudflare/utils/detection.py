@@ -26,6 +26,7 @@ async def detect_cloudflare_challenge(
 
     :param captcha_container: Page, Frame, ElementHandle
     :param challenge_type: Type of challenge to detect ('turnstile' or 'interstitial')
+
     :return: True if Cloudflare challenge is detected, False otherwise
     """
 

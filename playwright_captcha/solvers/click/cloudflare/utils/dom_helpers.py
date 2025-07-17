@@ -24,6 +24,7 @@ async def get_ready_checkbox(
     :param iframes: Cloudflare iframes
     :param delay: Delay in seconds between attempts to find the checkbox
     :param attempts: Maximum number of attempts to find the checkbox
+
     :return: Tuple (checkboxes Frame, checkboxes ElementHandle) if checkbox is found and ready, None otherwise
     """
 

@@ -15,6 +15,7 @@ async def detect_recaptcha_v3_data(queryable: Union[Page, Frame, ElementHandle],
     Detect the data (e.g. site key) and other possible params of the captcha
 
     :param queryable: The Playwright Page, Frame, or ElementHandle to search for the captcha data
+    :param kwargs: Additional parameters
 
     :return: A dictionary containing the detected captcha data needed for solving
     """
