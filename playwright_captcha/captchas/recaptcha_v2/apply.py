@@ -8,7 +8,7 @@ from playwright_captcha.utils.js_script import load_js_script
 logger = logging.getLogger(__name__)
 
 
-async def apply_recaptcha_v2_captcha(page: Page, token: str) -> None:
+async def apply_recaptcha_v2_captcha(page: Page, token: str, *args, **kwargs) -> None:
     """
     Apply a token to the reCAPTCHA v2 challenge on the page
 
