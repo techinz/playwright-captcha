@@ -5,6 +5,8 @@
 
 A Python library that makes captcha solving simple and automated with Playwright and Playwright-based frameworks. Just a few lines of code, and you're ready to go!
 
+<i>(Need some help with <b>Automation</b>? You can  <a href="https://automation.techinz.dev">hire me</a> for custom development or consulting!)</i>
+
 ## ✨ What it does
 
 This framework helps you solve captchas in Playwright or Playwright-based frameworks (like Camoufox or Patchright) automatically. It will:
