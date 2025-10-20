@@ -21,24 +21,11 @@ This framework helps you solve captchas in Playwright or Playwright-based framew
 
 <p align="center">
     <a href="https://www.nstproxy.com/?type=flow&utm_source=techinz" target="_blank">
-        <img width="624" height="277" alt="Image" src="https://github.com/user-attachments/assets/280e27fd-90c6-4bc3-8300-ab3ed16e57f7" />
+        <img width="370" height="370" alt="Image" src="https://github.com/user-attachments/assets/1231e2c5-0b50-48d7-aafd-25a8bcebcae5" />
     </a>
 </p>
 
-If you're looking for a reliable proxy to <b>bypass anti-bot systems, scrape at scale, and access geo-restricted data without blocks</b>, <a href="https://www.nstproxy.com/?type=flow&utm_source=techinz">Nstproxy</a> is built for you. Perfect for large-scale web scraping, SEO monitoring, e-commerce data collection, price intelligence, and automation — even under the strictest anti-scraping protections.
-
-Nstproxy offers a global pool of residential, datacenter, and IPv6 proxies with rotating or sticky sessions, advanced anti-block tech, and pricing from $0.1/GB for maximum uptime and ROI.
-
-<b>Key Features:</b>
-- 🌍 <b>Global IP Coverage</b> – 110M+ residential IPs, 195+ countries, IPv4/IPv6
-- 🔄 <b>Rotation Control</b> – Per request or sticky sessions for consistent sessions
-- 🛡 <b>Anti-ban & CAPTCHA Bypass</b> – Designed for high scraping success rates
-- 💰 <b>Affordable</b> – From $0.1/GB, far below market average
-- ⚡ <b>Multi-purpose</b> – Scraping, SEO, automation, e-commerce, analytics
-- 🔌 <b>Easy Integration</b> – Python, Puppeteer, Playwright, Node.js
-- 📈 <b>Unlimited Scaling</b> – Handle any volume with stable performance
-
-An all-in-one proxy solution for developers and traders who need reliability, scalability, and cost efficiency.  
+<b>Nstproxy</b> delivers reliable, scalable, and cost-efficient proxies — <b>residential, datacenter, ISP, and IPv6</b> — with rotation, anti-block tech, and pricing from <b>$0.1/GB</b> for maximum uptime and ROI.  
 👉 Learn more: <a href="https://www.nstproxy.com/?type=flow&utm_source=techinz">Nstproxy.com</a>: https://www.nstproxy.com/?type=flow&utm_source=techinz  | <a href="https://app.nstproxy.com/?utm_source=techinz">Dashboard</a>  
 Telegram: https://t.me/nstproxy Discord: https://discord.gg/5jjWCAmvng   
 Use code: <b>TECHINZ get 10% OFF</b>
