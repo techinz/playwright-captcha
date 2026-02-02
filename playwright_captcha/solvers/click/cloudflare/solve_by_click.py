@@ -87,18 +87,26 @@ async def solve_cloudflare_by_click(
     else:
         raise CaptchaSolvingError(f'Failed to click checkbox after maximum attempts')
 
-    # wait for Cloudflare to process the click
-    await asyncio.sleep(solve_click_delay)
-
     # 5. verify success
     if challenge_type == "turnstile":
-        # for turnstile, check for success element in the cf's iframe or expected content is present
+        # for turnstile, check for the success element in the Cloudflare iframe and that it is visible
         success_elements = await search_shadow_root_elements(framework, iframe, 'div[id="success"]')
-        challenge_solved = bool(success_elements)
+        if success_element := next(iter(success_elements), None):
+            try:
+                await success_element.wait_for_element_state("visible", timeout=solve_click_delay * 1000)
+                challenge_solved = True
+            except TimeoutError as e:
+                challenge_solved = False
+        else:
+            raise CaptchaDetectionError("Cloudflare turnstile success element does not exist on the page.")
     else:
-        # for interstitial, check if challenge is gone or expected content is present
-        cloudflare_detected = await detect_cloudflare_challenge(captcha_container)
-        challenge_solved = not cloudflare_detected
+        # for interstitial, check if the challenge is gone or expected content is present
+        try:
+            await page.wait_for_event("load", timeout=solve_click_delay * 1000)
+            cloudflare_detected = await detect_cloudflare_challenge(captcha_container)
+            challenge_solved = not cloudflare_detected
+        except TimeoutError as e:
+            challenge_solved = False
 
     expected_content_detected = await detect_expected_content(page, captcha_container, expected_content_selector)
     if challenge_solved or expected_content_detected:
