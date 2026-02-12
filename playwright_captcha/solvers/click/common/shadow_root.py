@@ -1,7 +1,9 @@
+import asyncio
 import logging
+from asyncio import Task, CancelledError
 from typing import Union, List, Optional
 
-from playwright.async_api import ElementHandle, Page, Frame
+from playwright.async_api import ElementHandle, Page, Frame, TimeoutError as PlaywrightTimeoutError
 
 from playwright_captcha.types import FrameworkType
 
@@ -71,7 +73,8 @@ async def get_shadow_roots(
 async def search_shadow_root_elements(
         framework: FrameworkType,
         queryable: Union[Page, Frame, ElementHandle],
-        selector: str
+        selector: str,
+        timeout: float = 10
 ) -> List[ElementHandle]:
     """
     Search for elements by selector within the shadow DOM of the queryable object
@@ -79,6 +82,7 @@ async def search_shadow_root_elements(
     :param framework: Framework type (e.g. PATCHRIGHT, CAMOUFOX, PLAYWRIGHT)
     :param queryable: Page, Frame, ElementHandle
     :param selector: CSS selector to search for elements
+    :param timeout: Timeout value in seconds to wait for selector to appear (Default: 10)
 
     :return: List of ElementHandles that match the selector
     """
@@ -86,25 +90,43 @@ async def search_shadow_root_elements(
     logger.debug(f'Searching for elements by selector "{selector}" in {queryable}')
 
     elements = []
-
+    tasks: set[Task] = set()
     try:
         shadow_roots = await get_shadow_roots(framework, queryable)  # get all shadow roots in the queryable object
         for shadow_root in shadow_roots:
             # find all elements by selector within the shadow root
-            js_script = f"shadow => shadow.querySelector('{selector}')"
+            tasks.add(
+                asyncio.create_task(shadow_root.wait_for_selector(selector, timeout=timeout * 1000))
+            )
 
-            element_handle = await shadow_root.evaluate_handle(js_script)
-            if not element_handle:
+        while tasks:
+            completed_tasks, tasks = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+            for task in completed_tasks:
+                try:
+                    if element_handle := task.result():
+                        if element := element_handle.as_element():
+                            elements.append(element)
+                            break
+                except PlaywrightTimeoutError:
+                    logger.debug("Searching shadow root for selector (%s) timed out", selector)
+                except CancelledError:
+                    continue
+            else:
+                # If we don't break the for loop - we havent found an element - continue the loop
                 continue
+            # We only hit this if we break because we found the turnstile - closing the while loop early
+            break
 
-            element = element_handle.as_element()
-            if element:
-                elements.append(element)
     except Exception as e:
         logger.error(f'Error searching for elements: {e}')
 
-    logger.debug(f'Found {len(elements)} elements matching selector "{selector}"')
+    finally:
+        if tasks:
+            for task in tasks:
+                task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
 
+    logger.debug(f'Found {len(elements)} elements matching selector "{selector}"')
     return elements
 
 
