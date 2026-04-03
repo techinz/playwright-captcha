@@ -1,8 +1,7 @@
-import asyncio
 import logging
 from typing import Optional, Union, Literal
 
-from playwright.async_api import Page, ElementHandle, Frame
+from playwright.async_api import Page, ElementHandle, Frame, TimeoutError as PlaywrightTimeoutError
 
 from playwright_captcha.solvers.click.cloudflare.utils.detection import detect_cloudflare_challenge
 from playwright_captcha.solvers.click.cloudflare.utils.dom_helpers import get_ready_checkbox
@@ -74,32 +73,36 @@ async def solve_cloudflare_by_click(
 
     logger.info('Found checkbox in Cloudflare iframe')
 
-    # 4. click the checkbox
-    for checkbox_click_attempt in range(checkbox_click_attempts):
+    # 4. click the checkboxs
+    if challenge_type == "interstitial":
+        # click checkbox and wait for page to reload or challenge to disappear
+        await click_checkbox(checkbox, checkbox_click_attempts)
+        
         try:
-            await checkbox.click()
-            logger.info('Checkbox clicked successfully')
-
-            break
-        except Exception as e:
-            logger.error(
-                f'Error clicking checkbox ({checkbox_click_attempt + 1}/{checkbox_click_attempts} attempt): {e}')
-    else:
-        raise CaptchaSolvingError(f'Failed to click checkbox after maximum attempts')
-
-    # wait for Cloudflare to process the click
-    await asyncio.sleep(solve_click_delay)
-
-    # 5. verify success
-    if challenge_type == "turnstile":
-        # for turnstile, check for success element in the cf's iframe or expected content is present
-        success_elements = await search_shadow_root_elements(framework, iframe, 'div[id="success"]')
-        challenge_solved = bool(success_elements)
-    else:
-        # for interstitial, check if challenge is gone or expected content is present
+            # wait for networkidle state (page fully loaded with no network activity)
+            await page.wait_for_load_state("networkidle", timeout=solve_click_delay * 1000)
+        except PlaywrightTimeoutError:
+            logger.debug("Network did not become idle within timeout, checking challenge status")
+        
+        # verify challenge is solved
         cloudflare_detected = await detect_cloudflare_challenge(captcha_container)
         challenge_solved = not cloudflare_detected
+    elif challenge_type == "turnstile":
+        # turnstile Success - Check that the `success` element is visible and showing
+        await click_checkbox(checkbox, checkbox_click_attempts)
+        success_elements = await search_shadow_root_elements(framework, iframe, 'div[id="success"]')
+        if success_element := next(iter(success_elements), None):
+            try:
+                await success_element.wait_for_element_state("visible", timeout=solve_click_delay * 1000)
+                challenge_solved = True
+            except PlaywrightTimeoutError:
+                challenge_solved = False
+        else:
+            raise CaptchaDetectionError("Cloudflare turnstile success element does not exist on the page.")
+    else:
+        raise CaptchaDetectionError("Unsupported Cloudflare Captcha Type: %s", challenge_type)
 
+    # 5. validate Success
     expected_content_detected = await detect_expected_content(page, captcha_container, expected_content_selector)
     if challenge_solved or expected_content_detected:
         logger.info('Solved successfully')
@@ -107,3 +110,23 @@ async def solve_cloudflare_by_click(
 
     raise CaptchaSolvingError(
         'Failed to solve Cloudflare challenge by click: challenge still present or expected content not detected')
+
+
+async def click_checkbox(checkbox: ElementHandle, checkbox_click_attempts: int):
+    """
+    Click the checkbox with retry logic
+    
+    :param checkbox: ElementHandle of the checkbox to click
+    :param checkbox_click_attempts: Maximum number of attempts to click the checkbox
+    :raises CaptchaSolvingError: If checkbox click fails after all attempts
+    """
+    for checkbox_click_attempt in range(checkbox_click_attempts):
+        try:
+            await checkbox.click()
+            logger.info('Checkbox clicked successfully')
+            break
+        except Exception as e:
+            logger.error(
+                f'Error clicking checkbox ({checkbox_click_attempt + 1}/{checkbox_click_attempts} attempt): {e}')
+    else:
+        raise CaptchaSolvingError(f'Failed to click checkbox after maximum attempts')
