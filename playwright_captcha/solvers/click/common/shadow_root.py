@@ -23,7 +23,6 @@ async def get_shadow_roots(
 
     logger.debug(f'Collecting shadow roots from {queryable}')
 
-    # script to collect all shadow roots
     js_script = """
     () => {
         const roots = [];
@@ -31,20 +30,20 @@ async def get_shadow_roots(
         function collectShadowRoots(node) {
             if (!node) return;
 
-            if (node.shadowRootUnl) {
-                roots.push(node.shadowRootUnl);
-                node = node.shadowRootUnl;
+            const shadow = node.shadowRoot;
+            if (shadow) {
+                roots.push(shadow);
+                collectShadowRoots(shadow);
             }
 
             for (const el of node.querySelectorAll("*")) {
-                if (el.shadowRootUnl) {
+                if (el.shadowRoot) {
                     collectShadowRoots(el);
                 }
             }
         }
 
         collectShadowRoots(document);
-        console.log(roots);
         return roots;
     }
     """
@@ -54,7 +53,6 @@ async def get_shadow_roots(
     else:
         handle = await queryable.evaluate_handle(js_script)
 
-    # convert JSHandle array to python list of ElementHandle
     properties = await handle.get_properties()
 
     shadow_roots = []
@@ -88,18 +86,10 @@ async def search_shadow_root_elements(
     elements = []
 
     try:
-        shadow_roots = await get_shadow_roots(framework, queryable)  # get all shadow roots in the queryable object
+        shadow_roots = await get_shadow_roots(framework, queryable)
         for shadow_root in shadow_roots:
-            # find all elements by selector within the shadow root
-            js_script = f"shadow => shadow.querySelector('{selector}')"
-
-            element_handle = await shadow_root.evaluate_handle(js_script)
-            if not element_handle:
-                continue
-
-            element = element_handle.as_element()
-            if element:
-                elements.append(element)
+            found_elements = await shadow_root.query_selector_all(selector)
+            elements.extend(found_elements)
     except Exception as e:
         logger.error(f'Error searching for elements: {e}')
 

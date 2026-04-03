@@ -118,15 +118,6 @@ Uses the browser's stealthiness to automatically click and solve captchas (works
 
   </details>
 
-<details>
-  <summary><h4>CaptchaAI - https://captchaai.com</h4></summary>
-
- Uses the captchaai.com API for solving:
-- ✅ reCAPTCHA v2
-- ✅ reCAPTCHA v3
-
-  </details>
-
 *More captcha types and solvers coming soon! Contributions welcome.*
 
 ## 📦 Installation
@@ -197,7 +188,6 @@ async def solve_with_2captcha():
         # Available API Solvers:
         # TwoCaptchaSolver
         # TenCaptchaSolver
-        # CaptchaAISolver
         
         async with TwoCaptchaSolver(framework=framework, 
                                     page=page, 
@@ -223,7 +213,7 @@ asyncio.run(solve_with_2captcha())
 2. **Click** on it using browser automation
 3. **Wait** for successful completion
 
-### External Solver Process (e.g., TwoCaptcha, TenCaptcha, CaptchaAI):
+### External Solver Process (e.g., TwoCaptcha, TenCaptcha):
 1. **Find** the captcha element
 2. **Extract** required data (site key, URL, etc.)
 3. **Send** to external solving service
@@ -312,7 +302,6 @@ playwright-captcha/
 ```env
 TWO_CAPTCHA_API_KEY=your_2captcha_api_key_here
 TEN_CAPTCHA_API_KEY=your_10captcha_api_key_here
-CAPTCHA_AI_API_KEY=your_captchaai_api_key_here
 ```
 
 ### Solver Options

@@ -3,8 +3,9 @@
 console.clear = () => console.log('Console was cleared');
 
 function setupIntercept() {
-  if (window.turnstile) {
-    console.log('intercepting turnstile.render');
+  if (window.turnstile && !window._turnstileIntercepted) {
+    window._turnstileIntercepted = true;
+    
     window.turnstile.render = (a, b) => {
       let params = {
         sitekey: b.sitekey,
@@ -24,6 +25,7 @@ function setupIntercept() {
         clearInterval(interval);
       }
 
+      console.log('blocking render for API solver');
       return;
     };
   }

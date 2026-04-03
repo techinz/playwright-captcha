@@ -101,9 +101,11 @@ class BaseSolver(ABC):
         # monkey-patch to open closed shadowRoots
         await self.page.add_init_script(await load_js_script('patches/unlockShadowRoot.js'))
 
-        if self.type == SolverType.twocaptcha:  # or other api-based solvers that needed this data
-            # cloudflare interstitial requires to inject a script to intercept the challenge parameters
-            await self.page.add_init_script(await load_js_script('patches/interceptCloudflareInterstitialData.js'))
+        # cloudflare interstitial requires to inject a script to intercept the challenge parameters
+        # only needed for API-based solvers on Playwright/Patchright (Camoufox has it built into inject.js)
+        if self.type in [SolverType.twocaptcha, SolverType.tencaptcha] and self.framework != FrameworkType.CAMOUFOX:
+            intercept_script = await load_js_script('patches/interceptCloudflareInterstitialData.js')
+            await self.page.add_init_script(intercept_script)
 
     async def _prepare_framework(self) -> None:
         """Framework preparation"""
@@ -140,6 +142,11 @@ class BaseSolver(ABC):
             logger.info("Camoufox workaround applied")
         else:
             logger.info("Camoufox workaround already applied")
+
+        if self.type in [SolverType.twocaptcha, SolverType.tencaptcha]:
+            logger.info("Setting Cloudflare intercept flag for API solver (Camoufox)")
+            await self.page.context.add_init_script('sessionStorage.setItem("_blockCloudflareRender", "true");')
+            logger.info("Cloudflare intercept flag registered in context via sessionStorage")
 
     async def _prepare_patchright(self) -> None:
         """Patchright preparation"""
@@ -313,7 +320,7 @@ class BaseSolver(ABC):
             if attempt < self.max_attempts:
                 if solver_data.get('reload_on_fail', False):
                     logger.info('Reloading page before next attempt...')
-                    await self.page.reload()
+                    await self.page.goto(self.page.url) # camoufox doesn't work with page.reload() properly
 
                 logger.info(f'Retrying in {self.attempt_delay} seconds...')
                 await asyncio.sleep(self.attempt_delay)

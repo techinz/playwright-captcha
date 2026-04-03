@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 from twocaptcha import AsyncTwoCaptcha
 
 from playwright_captcha import FrameworkType
-from playwright_captcha.solvers.api.captchaai.captchaai.async_solver import AsyncCaptchaAI
 from playwright_captcha.solvers.api.tencaptcha.tencaptcha.async_solver import AsyncTenCaptcha
 
 load_dotenv()
@@ -44,16 +43,6 @@ def ten_captcha_api_key() -> Optional[str]:
 
 
 @pytest.fixture(scope="session")
-def captcha_ai_api_key() -> Optional[str]:
-    """Get CaptchaAI API key from environment"""
-
-    api_key = os.getenv('CAPTCHA_AI_API_KEY')
-    if not api_key:
-        pytest.skip("CAPTCHA_AI_API_KEY not found in environment")
-    return api_key
-
-
-@pytest.fixture(scope="session")
 def two_captcha_client(two_captcha_api_key: str) -> AsyncTwoCaptcha:
     """Create AsyncTwoCaptcha client"""
 
@@ -65,13 +54,6 @@ def ten_captcha_client(ten_captcha_api_key: str) -> AsyncTenCaptcha:
     """Create AsyncTenCaptcha client"""
 
     return AsyncTenCaptcha(ten_captcha_api_key)
-
-
-@pytest.fixture(scope="session")
-def captcha_ai_client(captcha_ai_api_key: str) -> AsyncCaptchaAI:
-    """Create AsyncCaptchaAI client"""
-
-    return AsyncCaptchaAI(captcha_ai_api_key)
 
 
 @pytest.fixture(params=[
