@@ -17,22 +17,6 @@ This framework helps you solve captchas in Playwright or Playwright-based framew
 4. **Submit** the form (when needed & possible)
 
 
----
-
-<p align="center">
-    <a href="https://www.nstproxy.com/?type=flow&utm_source=techinz" target="_blank">
-        <img width="370" height="370" alt="Image" src="https://github.com/user-attachments/assets/1231e2c5-0b50-48d7-aafd-25a8bcebcae5" />
-    </a>
-</p>
-
-<b>Nstproxy</b> delivers reliable, scalable, and cost-efficient proxies — <b>residential, datacenter, ISP, and IPv6</b> — with rotation, anti-block tech, and pricing from <b>$0.1/GB</b> for maximum uptime and ROI.  
-👉 Learn more: <a href="https://www.nstproxy.com/?type=flow&utm_source=techinz">Nstproxy.com</a>: https://www.nstproxy.com/?type=flow&utm_source=techinz  | <a href="https://app.nstproxy.com/?utm_source=techinz">Dashboard</a>  
-Telegram: https://t.me/nstproxy Discord: https://discord.gg/5jjWCAmvng   
-Use code: <b>TECHINZ get 10% OFF</b>
-
----
-
-
 ## 📸 Demonstration (recorded in headless mode)
 
 <div align="center">
