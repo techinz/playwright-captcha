@@ -7,6 +7,16 @@ A Python library that makes captcha solving simple and automated with Playwright
 
 <i>(Need some help with <b>Automation</b>? You can  <a href="https://automation.techinz.dev">hire me</a> for custom development or consulting!)</i>
 
+---
+
+<a href="https://mangoproxy.com">
+  <img width="1412" height="447" alt="Proxies You Can Rely On: Residential, Server, and Mobile. Use code TECHINZ for 8% OFF ISP Static Proxies" src="https://github.com/user-attachments/assets/7c58d48b-0736-4386-a6be-49c4266f92a5" />
+</a>
+
+> Use code **TECHINZ** for **8% OFF** ISP Static Proxies at [mangoproxy.com](https://mangoproxy.com)
+
+---
+
 ## ✨ What it does
 
 This framework helps you solve captchas in Playwright or Playwright-based frameworks (like Camoufox or Patchright) automatically. It will:
