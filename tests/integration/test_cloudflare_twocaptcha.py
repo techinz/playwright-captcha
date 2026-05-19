@@ -75,7 +75,8 @@ class TestCloudflareTwoCaptchaSolvers:
 
             result = await solver.solve_captcha(
                 captcha_container=page,
-                captcha_type=CaptchaType.CLOUDFLARE_INTERSTITIAL
+                captcha_type=CaptchaType.CLOUDFLARE_INTERSTITIAL,
+                expected_content_selector='//p[text()="Captcha is passed successfully!"]'
             )
 
             # twocaptcha should return a token

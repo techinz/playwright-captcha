@@ -1,3 +1,8 @@
+class CaptchaAlreadySolvedException(Exception):
+    """ Raised when the captcha challenge was already bypassed """
+    pass
+
+
 class CaptchaDetectionError(Exception):
     """ Raised when there is an error in captcha detection """
     pass

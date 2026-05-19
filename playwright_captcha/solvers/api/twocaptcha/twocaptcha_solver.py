@@ -60,7 +60,7 @@ class TwoCaptchaSolver(ApiSolverBase):
             kwargs['url'] = url
 
         # automatically detect captcha data needed for solving/applying the captcha
-        captcha_data = await self.detect_captcha_data(captcha_container, captcha_type)
+        captcha_data = await self.detect_captcha_data(captcha_container, captcha_type, **kwargs)
 
         # convert captcha_data keys to match 2Captcha API syntax
         param_name_mapping = {

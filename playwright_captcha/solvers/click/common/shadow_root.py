@@ -121,6 +121,16 @@ async def search_shadow_root_elements(
                 task.cancel()
             await gather(*tasks, return_exceptions=True)
 
+    # fallback: search the main document directly (not just shadow roots).
+    if not elements:
+        try:
+            direct_elements = await queryable.query_selector_all(selector)
+            if direct_elements:
+                logger.debug(f'Found {len(direct_elements)} elements via direct query fallback for selector "{selector}"')
+                elements.extend(direct_elements)
+        except Exception as e:
+            logger.debug(f'Direct query fallback failed for selector "{selector}": {e}')
+
     logger.debug(f'Found {len(elements)} elements matching selector "{selector}"')
 
     return elements
@@ -159,6 +169,23 @@ async def search_shadow_root_iframes(
                 matched_iframes.append(cf_iframe)
     except Exception as e:
         logger.error(f'Error searching for iframes: {e}')
+
+    # Fallback: search page.frames directly
+    if not matched_iframes:
+        logger.debug(f'Shadow DOM traversal found no iframes, falling back to page.frames search')
+        try:
+            frames_owner = None
+            if hasattr(captcha_container, 'frames'):
+                frames_owner = captcha_container
+            elif hasattr(captcha_container, 'page') and hasattr(captcha_container.page, 'frames'):
+                frames_owner = captcha_container.page
+
+            if frames_owner is not None:
+                for frame in frames_owner.frames:
+                    if src_filter in frame.url and not frame.is_detached():
+                        matched_iframes.append(frame)
+        except Exception as e:
+            logger.error(f'Error in page.frames fallback search: {e}')
 
     logger.debug(f'Found {len(matched_iframes)} iframes with src containing "{src_filter}"')
 

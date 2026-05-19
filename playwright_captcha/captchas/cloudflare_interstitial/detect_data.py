@@ -4,7 +4,7 @@ from typing import Union
 
 from playwright.async_api import Page, Frame, ElementHandle
 
-from playwright_captcha.utils.exceptions import CaptchaDataDetectionError
+from playwright_captcha.utils.exceptions import CaptchaAlreadySolvedException, CaptchaDataDetectionError
 
 try:
     from patchright.async_api import Page as PatchrightPage
@@ -39,11 +39,18 @@ async def detect_interstitial_data(queryable: Union[Page, Frame, ElementHandle],
         return data
 
     intercepted_params = {}
+    expected_content_selector = kwargs.get('expected_content_selector')
 
     # wait for captcha to initialize (max 30 seconds)
     max_wait_time = 30
     start_time = time.time()
     while not intercepted_params and time.time() - start_time < max_wait_time:
+        # check if the challenge was already bypassed automatically
+        if expected_content_selector and await page.locator(expected_content_selector).count() > 0:
+            raise CaptchaAlreadySolvedException(
+                f'Challenge already bypassed — "{expected_content_selector}" is visible'
+            )
+
         if getattr(page.add_init_script, 'is_camoufox_workaround', None) is True:
             # use main world data for the add_init_script workaround (camoufox)
             script = 'mw:window.cfParams'

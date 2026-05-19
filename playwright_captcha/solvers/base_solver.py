@@ -8,6 +8,7 @@ from playwright.async_api import Page, Frame, ElementHandle
 from playwright_captcha.types import CaptchaType, FrameworkType
 from playwright_captcha.types.solvers import SolverType
 from playwright_captcha.utils.js_script import load_js_script
+from playwright_captcha.utils.exceptions import CaptchaAlreadySolvedException
 
 logger = logging.getLogger(__name__)
 
@@ -99,11 +100,14 @@ class BaseSolver(ABC):
         await self._prepare_framework()
 
         # monkey-patch to open closed shadowRoots
-        await self.page.add_init_script(await load_js_script('patches/unlockShadowRoot.js'))
+        # for patchright, add_init_script causes net::ERR_NAME_NOT_RESOLVED on subsequent page.goto,
+        # so the script is injected via CDP in _prepare_patchright() instead
+        if self.framework != FrameworkType.PATCHRIGHT:
+            await self.page.add_init_script(await load_js_script('patches/unlockShadowRoot.js'))
 
         # cloudflare interstitial requires to inject a script to intercept the challenge parameters
-        # only needed for API-based solvers on Playwright/Patchright (Camoufox has it built into inject.js)
-        if self.type in [SolverType.twocaptcha, SolverType.tencaptcha] and self.framework != FrameworkType.CAMOUFOX:
+        # only needed for API-based solvers on Playwright (Camoufox has it built-in, Patchright uses CDP)
+        if self.type in [SolverType.twocaptcha, SolverType.tencaptcha] and self.framework not in [FrameworkType.CAMOUFOX, FrameworkType.PATCHRIGHT]:
             intercept_script = await load_js_script('patches/interceptCloudflareInterstitialData.js')
             await self.page.add_init_script(intercept_script)
 
@@ -162,6 +166,30 @@ class BaseSolver(ABC):
             return await original_evaluate(expression, arg, isolated_context=isolated_context)
 
         self.page.evaluate = evaluate_wrapper
+
+        # patchright's add_init_script causes net::ERR_NAME_NOT_RESOLVED on subsequent page.goto,
+        # so all init scripts are injected directly via CDP instead
+        try:
+            cdp = await self.page.context.new_cdp_session(self.page)
+
+            shadow_root_script = await load_js_script('patches/unlockShadowRoot.js')
+            await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
+                'source': shadow_root_script,
+                'runImmediately': False,
+            })
+            logger.info("Injected unlockShadowRoot.js via CDP for patchright")
+
+            if self.type in [SolverType.twocaptcha, SolverType.tencaptcha]:
+                intercept_script = await load_js_script('patches/interceptCloudflareInterstitialData.js')
+                await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
+                    'source': intercept_script,
+                    'runImmediately': False,
+                })
+                logger.info("Injected interceptCloudflareInterstitialData.js via CDP for patchright")
+
+            await cdp.detach()
+        except Exception as e:
+            logger.warning(f"Failed to inject init scripts via CDP for patchright: {e}")
 
     async def _prepare_playwright(self) -> None:
         """Playwright preparation"""
@@ -306,12 +334,23 @@ class BaseSolver(ABC):
 
         solver_data = await self._get_solver_data(captcha_type)
 
+        # if expected content is already visible, the challenge was bypassed automatically (e.g. patchright)
+        expected_content_selector = kwargs.get('expected_content_selector')
+        if expected_content_selector:
+            from playwright_captcha.solvers.click.common.detection import detect_expected_content
+            if await detect_expected_content(self.page, captcha_container, expected_content_selector):
+                logger.info('Challenge already bypassed - expected content is already visible, skipping solve')
+                return True
+
         last_exception = None
         for attempt in range(1, self.max_attempts + 1):
             logger.info(f'Solving {captcha_type.value} captcha, attempt {attempt}/{self.max_attempts}')
 
             try:
                 return await self._solve_captcha_once(captcha_container, captcha_type, **kwargs)
+            except CaptchaAlreadySolvedException as e:
+                logger.info(f'Challenge already bypassed on attempt {attempt}: {e}')
+                return True
             except Exception as e:
                 logger.exception(f'Error solving {captcha_type.value} captcha on attempt {attempt}: {e}', exc_info=True)
 
