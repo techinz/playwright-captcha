@@ -8,6 +8,7 @@ except ImportError:
     raise ImportError("Playwright is not installed. Please install it with 'pip install playwright'.")
 
 from playwright_captcha.solvers.api.twocaptcha.twocaptcha_solver import TwoCaptchaSolver
+from playwright_captcha.solvers.api.peak.peak_solver import PeakSolver
 from playwright_captcha.solvers.base_solver import BaseSolver
 from .solvers.api.api_solver_base import ApiSolverBase
 from .solvers.click import ClickSolver
@@ -21,5 +22,6 @@ __all__ = [
     'BaseSolver',
     'ClickSolver',
     'ApiSolverBase',
-    'TwoCaptchaSolver'
+    'TwoCaptchaSolver',
+    'PeakSolver'
 ]
