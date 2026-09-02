@@ -108,7 +108,7 @@ Uses the browser's stealthiness to automatically click and solve captchas (works
  Uses the Peak API for solving:
 - ✅ Cloudflare Turnstile
 
- One API call returns the token in about a second (no submit-then-poll). Free $0.50 trial, no card.
+ One API call returns the token in about a second (no submit-then-poll). 1,000 free solves to start, no card.
 
   </details>
 
