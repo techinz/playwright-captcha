@@ -12,3 +12,4 @@ class SolverType(Enum):
     # api
     twocaptcha = "twocaptcha"
     tencaptcha = "tencaptcha"
+    peak = "peak"

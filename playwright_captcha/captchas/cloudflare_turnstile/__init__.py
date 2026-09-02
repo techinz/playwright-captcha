@@ -3,6 +3,7 @@ from playwright_captcha import BaseSolver, CaptchaType
 from .apply import apply_cloudflare_turnstile_captcha
 from .detect_data import detect_turnstile_data
 from .solvers.click import solve_cloudflare_turnstile_click
+from .solvers.peak import solve_cloudflare_turnstile_peak
 from .solvers.twocaptcha import solve_cloudflare_turnstile_twocaptcha
 from ...types.solvers import SolverType
 
@@ -10,6 +11,8 @@ from ...types.solvers import SolverType
 BaseSolver.register_solver(SolverType.click, CaptchaType.CLOUDFLARE_TURNSTILE, solve_cloudflare_turnstile_click)
 BaseSolver.register_solver(SolverType.twocaptcha, CaptchaType.CLOUDFLARE_TURNSTILE,
                            solve_cloudflare_turnstile_twocaptcha)
+BaseSolver.register_solver(SolverType.peak, CaptchaType.CLOUDFLARE_TURNSTILE,
+                           solve_cloudflare_turnstile_peak)
 
 # register detector
 BaseSolver.register_detector(CaptchaType.CLOUDFLARE_TURNSTILE, detect_turnstile_data)

@@ -102,6 +102,16 @@ Uses the browser's stealthiness to automatically click and solve captchas (works
 
   </details>
 
+<details>
+  <summary><h4>Peak - https://peak.fo</h4></summary>
+
+ Uses the Peak API for solving:
+- ✅ Cloudflare Turnstile
+
+ One API call returns the token in about a second (no submit-then-poll). 1,000 free solves to start, no card.
+
+  </details>
+
 *More captcha types and solvers coming soon! Contributions welcome.*
 
 ## 📦 Installation
@@ -172,6 +182,7 @@ async def solve_with_2captcha():
         # Available API Solvers:
         # TwoCaptchaSolver
         # TenCaptchaSolver
+        # PeakSolver
         
         async with TwoCaptchaSolver(framework=framework, 
                                     page=page, 
