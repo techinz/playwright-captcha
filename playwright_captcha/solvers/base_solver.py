@@ -333,6 +333,7 @@ class BaseSolver(ABC):
             raise ValueError(f"{self.get_name()} cannot solve {captcha_type.value} captchas")
 
         solver_data = await self._get_solver_data(captcha_type)
+        kwargs.update(dict([(key, value) for key, value in solver_data.items() if key != "solver" and not key in kwargs]))
 
         # if expected content is already visible, the challenge was bypassed automatically (e.g. patchright)
         expected_content_selector = kwargs.get('expected_content_selector')
