@@ -67,11 +67,18 @@ def framework(request) -> FrameworkType:
     return request.param
 
 
-@pytest_asyncio.fixture
-async def browser_context(framework: FrameworkType):
-    """Create browser context based on framework type"""
+@pytest.fixture(params=[
+    False,
+])
+def headless(request) -> bool:
+    """Parametrized fixture for headless mode"""
 
-    headless = False
+    return request.param
+
+
+@pytest_asyncio.fixture
+async def browser_context(framework: FrameworkType, headless):
+    """Create browser context based on framework type"""
 
     if framework == FrameworkType.PLAYWRIGHT:
         from playwright.async_api import async_playwright

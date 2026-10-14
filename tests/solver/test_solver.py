@@ -10,6 +10,7 @@ from playwright_captcha.types import SolverType
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("headless", [True], indirect=True)
 class TestCloudflareClickSolversLocal:
     """Unit tests for Cloudflare Click solvers with all frameworks"""
 
@@ -75,7 +76,7 @@ class TestCloudflareClickSolversLocal:
 
         yield framework, page
 
-    async def test_click_turnstile_solver(self, page_mock, patch_solver):
+    async def test_click_turnstile_solver(self, headless, page_mock, patch_solver):
         """Test Click solver for Cloudflare Turnstile with all frameworks"""
         framework, page = page_mock
 
@@ -93,7 +94,7 @@ class TestCloudflareClickSolversLocal:
         self.wait_checkbox_delay = 7
         self.checkbox_click_attempts = 8
 
-    async def test_click_turnstile_solver_timings_register(self, page_mock, solver_timings, patch_solver):
+    async def test_click_turnstile_solver_timings_register(self, headless, page_mock, solver_timings, patch_solver):
         """Test Click solver timings set at registration for Cloudflare Turnstile with all frameworks"""
         framework, page = page_mock
 
@@ -108,7 +109,7 @@ class TestCloudflareClickSolversLocal:
         assert self.wait_checkbox_delay_effective == 7
         assert self.checkbox_click_attempts_effective == 8
 
-    async def test_click_turnstile_solver_timings_kwargs(self, page_mock, patch_solver):
+    async def test_click_turnstile_solver_timings_kwargs(self, headless, page_mock, patch_solver):
         """Test Click solver timings set via kwargs for Cloudflare Turnstile with all frameworks"""
         framework, page = page_mock
 
@@ -129,7 +130,7 @@ class TestCloudflareClickSolversLocal:
         assert self.wait_checkbox_delay_effective == 11
         assert self.checkbox_click_attempts_effective == 12
 
-    async def test_click_turnstile_solver_timings_register_kwargs(self, page_mock, solver_timings, patch_solver):
+    async def test_click_turnstile_solver_timings_register_kwargs(self, headless, page_mock, solver_timings, patch_solver):
         """Test Click solver timings set at registration and kwargs for Cloudflare Turnstile with all frameworks"""
         framework, page = page_mock
 
