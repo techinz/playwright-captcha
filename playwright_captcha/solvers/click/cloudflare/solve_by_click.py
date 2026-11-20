@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import Optional, Union, Literal
 
@@ -6,7 +7,7 @@ from playwright.async_api import Page, ElementHandle, Frame, TimeoutError as Pla
 from playwright_captcha.solvers.click.cloudflare.utils.detection import detect_cloudflare_challenge
 from playwright_captcha.solvers.click.cloudflare.utils.dom_helpers import get_ready_checkbox
 from playwright_captcha.solvers.click.common.detection import detect_expected_content
-from playwright_captcha.solvers.click.common.shadow_root import search_shadow_root_iframes, search_shadow_root_elements
+from playwright_captcha.solvers.click.common.shadow_root import search_shadow_root_iframes
 from playwright_captcha.types import FrameworkType
 from playwright_captcha.utils.exceptions import CaptchaSolvingError, CaptchaDetectionError
 
@@ -69,7 +70,7 @@ async def solve_cloudflare_by_click(
         attempts=wait_checkbox_attempts)
     if not checkbox_data:
         raise CaptchaDetectionError(f'Cloudflare checkbox not found or not ready')
-    iframe, checkbox = checkbox_data
+    _, checkbox = checkbox_data
 
     logger.info('Found checkbox in Cloudflare iframe')
 
@@ -88,17 +89,10 @@ async def solve_cloudflare_by_click(
         cloudflare_detected = await detect_cloudflare_challenge(captcha_container)
         challenge_solved = not cloudflare_detected
     elif challenge_type == "turnstile":
-        # turnstile Success - Check that the `success` element is visible and showing
+        # turnstile is solved once it puts the token into its response input
+        # (elements inside the widget have randomized ids, so they can't be used to detect success)
         await click_checkbox(checkbox, checkbox_click_attempts)
-        success_elements = await search_shadow_root_elements(framework, iframe, 'div[id="success"]')
-        if success_element := next(iter(success_elements), None):
-            try:
-                await success_element.wait_for_element_state("visible", timeout=solve_click_delay * 1000)
-                challenge_solved = True
-            except PlaywrightTimeoutError:
-                challenge_solved = False
-        else:
-            raise CaptchaDetectionError("Cloudflare turnstile success element does not exist on the page.")
+        challenge_solved = await wait_turnstile_token(page, solve_click_delay)
     else:
         raise CaptchaDetectionError("Unsupported Cloudflare Captcha Type: %s", challenge_type)
 
@@ -110,6 +104,24 @@ async def solve_cloudflare_by_click(
 
     raise CaptchaSolvingError(
         'Failed to solve Cloudflare challenge by click: challenge still present or expected content not detected')
+
+
+async def wait_turnstile_token(page: Page, timeout: int) -> bool:
+    """
+    Wait until Turnstile puts a token into its response input
+
+    :param page: Playwright Page containing the Turnstile widget
+    :param timeout: Maximum time to wait in seconds
+
+    :return: True if the token appeared, False otherwise
+    """
+    for _ in range(timeout):
+        if await page.evaluate(
+                "() => [...document.querySelectorAll('input[name=\"cf-turnstile-response\"]')].some(i => i.value)"):
+            return True
+        await asyncio.sleep(1)
+
+    return False
 
 
 async def click_checkbox(checkbox: ElementHandle, checkbox_click_attempts: int):
