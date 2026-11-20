@@ -51,12 +51,18 @@ class TestCloudflareClickSolversLocal:
         except AttributeError:
             pass
 
+        original = BaseSolver._solvers[SolverType.click][CaptchaType.CLOUDFLARE_TURNSTILE]
+
         BaseSolver.register_solver(
             SolverType.click,
             CaptchaType.CLOUDFLARE_TURNSTILE,
             self.fake_solve_cloudflare_by_click,
             **timings,
         )
+
+        yield
+
+        BaseSolver._solvers[SolverType.click][CaptchaType.CLOUDFLARE_TURNSTILE] = original
 
     @pytest_asyncio.fixture
     async def page_mock(self, browser_context):
@@ -86,6 +92,10 @@ class TestCloudflareClickSolversLocal:
         async with ClickSolver(framework=framework, page=page) as solver:
             await solver.solve_captcha(captcha_container=page,
                                        captcha_type=CaptchaType.CLOUDFLARE_TURNSTILE)
+        assert self.solve_click_delay_effective == 1
+        assert self.wait_checkbox_attempts_effective == 2
+        assert self.wait_checkbox_delay_effective == 3
+        assert self.checkbox_click_attempts_effective == 4
 
     @pytest_asyncio.fixture
     async def solver_timings(self, browser_context):
