@@ -90,6 +90,7 @@ Uses the browser's stealthiness to automatically click and solve captchas (works
 - ✅ Cloudflare Turnstile
 - ✅ reCAPTCHA v2
 - ✅ reCAPTCHA v3
+- ✅ CutCaptcha
 
   </details>
 
@@ -116,6 +117,7 @@ Check out the [examples](examples/) directory for detailed usage examples:
 
 - **[Cloudflare Examples](examples/cloudflare/)**: Turnstile and Interstitial challenges
 - **[reCAPTCHA Examples](examples/recaptcha/)**: v2 and v3 implementations
+- **[CutCaptcha Examples](examples/cutcaptcha/)**: CutCaptcha via 2Captcha
 
 Each example includes configurations for Playwright, Patchright, and Camoufox.
 
@@ -269,7 +271,8 @@ async with AsyncCamoufox(
 playwright-captcha/
 ├── examples/                   # Usage examples
 │   ├── cloudflare/             # Cloudflare captcha examples
-│   └── recaptcha/              # reCAPTCHA examples
+│   ├── recaptcha/              # reCAPTCHA examples
+│   └── cutcaptcha/             # CutCaptcha examples
 └── playwright_captcha/         # Main package
     ├── captchas/               # Captcha type implementations
     ├── solvers/                # Solver implementations
