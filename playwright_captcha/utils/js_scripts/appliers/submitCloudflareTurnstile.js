@@ -1,4 +1,14 @@
 (token) => {
+    // method 0: callback intercepted from turnstile.render() (API solvers block the render call)
+    if (typeof window.cfCallback === 'function') {
+        try {
+            window.cfCallback(token);
+            return true;
+        } catch (e) {
+            console.error('Error calling intercepted turnstile callback:', e);
+        }
+    }
+
     // method 1: try to find callback in data-callback attribute
     const container = document.querySelector('.cf-turnstile, [class*="turnstile"]');
     if (container && container.hasAttribute('data-callback')) {
